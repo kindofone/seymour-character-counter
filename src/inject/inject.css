@@ -1,0 +1,20 @@
+pre.seymour-counter {
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 1000000;
+	margin: 0;
+	width: auto;
+	font-family: Georgia, Verdana, Arial, sans-serif;
+	font-size: 1em;
+	line-height: 1em;
+	cursor: default;
+	padding: 2px 4px 2px 18px;
+	text-align: center;
+	background-color: lightgray;
+	background-position: 2px 50%;
+	background-repeat: no-repeat;
+	color: white;
+	border-radius: 5px;
+	transition: opacity 100ms;
+}

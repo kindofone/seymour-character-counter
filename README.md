@@ -1,2 +1,2 @@
-seymour.cc
+Seymour: Character Counter
 ==========

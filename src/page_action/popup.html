@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Seymour</title>
+		<link rel="stylesheet" href="../options_custom/css/setting.css" media="screen">
+		<style>
+			body {
+				font-family: 'lucida grande',tahoma,verdana,arial,sans-serif;
+				margin: 0;
+				padding: 0;
+				font-size: 14px;
+			}
+
+			body.active {
+				width: 500px;
+			}
+			body.inactive {
+				width: 400px;
+			}
+
+			header {
+				background: #edeff4;
+				padding: 8px;
+				overflow: hidden;
+			}
+			section {
+				padding: 5px;
+			}
+
+			.inactive section {
+				display: none;
+			}
+
+			.titles {
+				float: left;
+			}
+			.actions {
+				float: right;
+			}
+
+			.title {
+				font-size: 1em;
+				display: block;
+			}
+			.inactive .title {
+				margin-top: 4px;
+			}
+
+			.subtitle {
+				font-size: 0.8em;
+				display: block;
+			}
+			.inactive .subtitle {
+				display: none;
+			}
+
+			.actions #activationToggle {
+				-webkit-appearance: none;
+				border: none;
+				padding: 5px;
+				cursor: pointer;
+			}
+			.active .actions #activationToggle {
+				background: #c0392b;
+			}
+			.inactive .actions #activationToggle {
+				background: #27ae60;
+			}
+
+			.active .actions #activationToggle:hover {
+				background: #e74c3c;
+			}
+			.inactive .actions #activationToggle:hover {
+				background: #2ecc71;
+			}
+
+			table.setting {
+				width: 100%;
+			}
+			.setting.group-name {
+				padding-bottom: 4px;
+				margin-bottom: 4px;
+				border-bottom: 1px solid #EEEEEE;
+			}
+
+			.active .seymore-state-label {
+				font-weight: bold;
+				color: #27ae60;
+			}
+
+			.inactive .seymore-state-label {
+				font-weight: bold;
+				color: #c0392b;
+			}
+		</style>
+	</head>
+	<body>
+		<header>
+			<div class="titles">
+				<span class="title"></span>
+				<span class="subtitle"></span>
+			</div>
+			<div class="actions">
+				<div id="activationToggle" class="active"></div>
+			</div>
+		</header>
+		<section></section>
+		<script src="URI.js"></script>
+		<script src="popup.js"></script>
+	</body>
+</html>
