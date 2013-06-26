@@ -5,29 +5,34 @@ var seymour = {
 
 	// icon URLs
 	iconDefaultURL: "",
-	iconActiveURL: "",
-	iconInactiveURL: "",
 
 	// run-time flags
 	activeFlag: false,
 	keyCombinationFlag: false,
+	DOMModifiedIdleTimer: null,
+	DOMModifiedTimeStamp: null,
+	DOMModifiedElement: null,
 
 	activate: function() {
-		document.addEventListener("DOMSubtreeModified", seymour.hook);
+		document.addEventListener("DOMSubtreeModified", seymour.onDOMModified);
 		document.addEventListener("scroll", seymour.onScroll);
 		seymour.hook();
 		seymour.extension.setDomainOption('autoactivate', 'true');
 		seymour.activeFlag = true;
-		seymour.extension.setActiveStateIcon(seymour.iconActiveURL);
+		seymour.extension.setActiveStateIcon('active');
 	},
 
 	deactivate: function() {
-		document.removeEventListener("DOMSubtreeModified", seymour.hook);
+		document.removeEventListener("DOMSubtreeModified", seymour.onDOMModified);
 		document.removeEventListener("scroll", seymour.onScroll);
 		seymour.unhook();
 		seymour.extension.setDomainOption('autoactivate', 'false');
 		seymour.activeFlag = false;
-		seymour.extension.setActiveStateIcon(seymour.iconInactiveURL);
+		seymour.extension.setActiveStateIcon('inactive');
+	},
+
+	onDOMModified: function() {
+		seymour.hook();
 	},
 
 	hook: function() {
@@ -40,11 +45,17 @@ var seymour = {
 					input.addEventListener('focus', seymour.onFocusBeforeInit);
 					input.setAttribute('data-seymour-input', 'true');
 					input.setAttribute('data-seymour-in-focus', 'false');
+
+					// some elements become contenteditable only onclick
+					// we need to set focus on these, after they have been made editable
+					// so Seymour onFocus function would be fired
+					if (document.activeElement == input) {
+						input.blur();
+						input.focus();
+					}
 				};
 			})(input), 1);
 		}
-
-		seymour.extension.setActiveStateIcon(seymour.iconActiveURL);
 	},
 
 	unhook: function() {
@@ -67,8 +78,6 @@ var seymour = {
 			var counter = counters[i];
 			counter.remove();
 		}
-
-		seymour.extension.setActiveStateIcon(seymour.iconInactiveURL);
 	},
 
 	initElement: function(element) {
@@ -370,8 +379,8 @@ seymour.extension = {
 		localStorage.setItem("seymour."+option, value);
 	},
 
-	setActiveStateIcon: function(iconURL) {
-		chrome.runtime.sendMessage({method: "setPageActionIcon", iconURL: iconURL});
+	setActiveStateIcon: function(state) {
+		chrome.runtime.sendMessage({method: "setPageActionIcon", state: state});
 	}
 }
 
@@ -428,8 +437,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 });
 
 seymour.iconDefaultURL = chrome.runtime.getURL("icons/icon12.png");
-seymour.iconActiveURL = chrome.runtime.getURL("icons/iconActive19.png");
-seymour.iconInactiveURL = chrome.runtime.getURL("icons/iconInactive19.png");
 
 var css = '.seymour-counter { background-image: url('+seymour.iconDefaultURL+'); }',
     head = document.head,
@@ -446,11 +453,8 @@ head.appendChild(style);
 seymour.extension.updateOptions();
 
 var shouldAutoActivate = (seymour.extension.getDomainOption('autoactivate') === 'true' ? true : false);
-// shouldAutoActivate = true;
 if (shouldAutoActivate) {
 	seymour.activate();
 } else {
-	seymour.extension.setActiveStateIcon(seymour.iconInactiveURL);
+	seymour.extension.setActiveStateIcon('inactive');
 }
-
-// chrome.runtime.sendMessage({method: "ready"});

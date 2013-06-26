@@ -25,7 +25,7 @@
   "web_accessible_resources": ["icons/icon12.png"],
   "page_action": {
     "default_icon": "icons/icon19.png",
-    "default_title": "Seymour",
+    "default_title": "Seymour: Character Counter",
     "default_popup": "src/page_action/popup.html"
   },
   "content_scripts": [

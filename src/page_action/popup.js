@@ -61,11 +61,10 @@ function getDomain() {
 	var uri = new URI(tab.url);
 	var domain = uri.domain();
 	var subdomain = uri.subdomain();
-	tabDomain = (subdomain != '' ? subdomain + '.' + domain : domain);
+	var tabDomain = (subdomain != '' ? subdomain + '.' + domain : domain);
 	return tabDomain;
 };
 
-var tabDomain;
 window.onload = function() {
 	document.querySelector('header #activationToggle').addEventListener('click', function() {
 		var isActiveAfterToggle = chrome.extension.getBackgroundPage().toggleSeymour();

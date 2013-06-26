@@ -1,9 +1,13 @@
-// var storage = chrome.storage.sync;
-
 var options = {};
 var selectedOptions = null;
 var selectedTab = {};
 var isSelectedTabActive = false;
+
+var pageActionStates = {};
+pageActionStates['default'] = {iconURL: chrome.runtime.getURL("icons/icon19.png"), title: 'Seymour: Character Counter'};
+pageActionStates['disabled'] = {iconURL: chrome.runtime.getURL("icons/icon19.png"), title: 'Seymour is unavailable for this domain'};
+pageActionStates['active'] = {iconURL: chrome.runtime.getURL("icons/iconActive19.png"), title: 'Seymour is active'};
+pageActionStates['inactive'] = {iconURL: chrome.runtime.getURL("icons/iconInactive19.png"), title: 'Seymour is inactive'};
 
 function toggleSeymour() {
 	var toggleAction = (isSelectedTabActive ? 'deactivate' : 'activate');
@@ -31,14 +35,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 		case "setPageActionIcon":
 		{
-			chrome.tabs.getSelected(null, (function() {
-				return function(tab) {
-					chrome.pageAction.setIcon({
-						tabId: tab.id,
-						path: request.iconURL
-					});
-				};
-			})(request, sender, sendResponse));
+			setPageActionIcon(request.state);
 		}
 		break;
 
@@ -50,6 +47,32 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 	}
 	return true;
 });
+
+function setPageActionIcon(state) {
+	// console.log('chrome.pageAction.setIcon', (request.iconURL.indexOf('Active') > -1 ? 'ActiveIcon' : 'InactiveIcon'), sender);
+	chrome.tabs.getSelected(null, (function() {
+		return function(tab) {
+			var iconURL, title;
+
+			switch (state) {
+				case 'disabled': { iconURL = pageActionStates.disabled.iconURL; title = pageActionStates.disabled.title; } break;
+				case 'active': { iconURL = pageActionStates.active.iconURL; title = pageActionStates.active.title; } break;
+				case 'inactive': { iconURL = pageActionStates.inactive.iconURL; title = pageActionStates.inactive.title; } break;
+				default: { iconURL = pageActionStates.default.iconURL; title = pageActionStates.default.title; } break;
+			}
+
+			console.log('tabId: ', tab.id, 'iconURL: ', iconURL, 'title: ', title);
+			chrome.pageAction.setIcon({
+				tabId: tab.id,
+				path: iconURL
+			});
+			chrome.pageAction.setTitle({
+				tabId: tab.id,
+				title: title
+			});
+		};
+	})(state));
+}
 
 function setOptions(option, value) {
 	chrome.tabs.sendMessage(selectedTab.id, {action: 'setOptions', key: option, value: value}, function(response) {
@@ -74,10 +97,12 @@ function handshake() {
             				initTab();
 		            	} else {
 		            		console.log('error in insertCSS: ', chrome.runtime.lastError, selectedTab.id);
+		            		setPageActionIcon('disabled');
 		            	}
 	            	});
             	} else {
             		console.log('error in executeScript: ', chrome.runtime.lastError, selectedTab.id);
+            		setPageActionIcon('disabled');
             	}
             });
 		}
@@ -107,20 +132,6 @@ function updateOptions() {
 	});
 }
 
-// function setItem(key, value) {
-// 	storage.set({key: value}, function() {
-// 		// Notify that we saved.
-// 	});
-// }
-
-// function getItem(key, callback) {
-// 	storage.get({key: ''}, (function() {
-// 		return function(items) {
-// 			callback(items.key);
-// 		};		
-// 	})(callback));
-// }
-
 // listen to url in tab change event
 chrome.tabs.onUpdated.addListener(function(tabId, change, tab) {
 	console.log('onUpdated', tabId);
@@ -148,40 +159,18 @@ chrome.tabs.query({active: true}, function(tab) {
 	handshake();
 });
 
-// chrome.tabs.onActivated.addListener(function(activeInfo) {
-// 	initInjectScripts(activeInfo.tabId);
-// });
+// var storage = chrome.storage.sync;
 
-// chrome.tabs.onUpdated.addListener(function(tabId) {
-// 	initInjectScripts(tabId);
-// });
-
-// function initInjectScripts(tabId) {
-// 	chrome.tabs.get(tabId, function(tab) {
-// 		if (tab.url.indexOf('chrome:') == -1) {
-// 			chrome.tabs.sendMessage(tab.id, {}, (function() {
-// 				return function(reponse) {
-// 					if (chrome.runtime.lastError) {
-// 						// if getting no reponse from the tab,
-// 						// it means the inject scripts are missing
-// 						injectIntoTab(tab.id);
-// 					}
-// 				};
-// 			})(tab));
-    		
-//     		chrome.pageAction.show(tabId);
-// 		}
+// function setItem(key, value) {
+// 	storage.set({key: value}, function() {
+// 		// Notify that we saved.
 // 	});
 // }
 
-// function injectIntoTab(tabId) {
-//     chrome.manifest = chrome.app.getDetails();
-
-//     var scripts = chrome.manifest.content_scripts[0].js;
-//     var i = 0, s = scripts.length;
-//     for( ; i < s; i++ ) {
-//         chrome.tabs.executeScript(tabId, {
-//             file: scripts[i]
-//         });
-//     }
+// function getItem(key, callback) {
+// 	storage.get({key: ''}, (function() {
+// 		return function(items) {
+// 			callback(items.key);
+// 		};		
+// 	})(callback));
 // }
