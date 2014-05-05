@@ -50,8 +50,7 @@ var seymour = {
 					// we need to set focus on these, after they have been made editable
 					// so Seymour onFocus function would be fired
 					if (document.activeElement == input) {
-						input.blur();
-						input.focus();
+                        seymour.initElement(input);
 					}
 				};
 			})(input), 1);

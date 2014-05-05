@@ -1,9 +1,10 @@
 {
-  "name": "Seymour: Character Counter",
-  "version": "1.0.1",
+  "name": "Seymour: Personal Typist",
+  "short_name": "Seymour"
+  "version": "1.5",
   "manifest_version": 2,
-  "description": "A character counter that appears while you type in input fields and text areas. It helps you write more consicely on the web.",
-  "homepage_url": "http://seymour.cc",
+  "description": "Meet Seymour. He's your personal typist.",
+  "homepage_url": "https://chrome.google.com/webstore/detail/seymour-character-counter/iakakkmhombdnngelgjejblefgljkded",
   "icons": {
     "12": "icons/icon12.png",
     "16": "icons/icon16.png",
@@ -24,8 +25,11 @@
   "options_page": "src/options_custom/index.html",
   "web_accessible_resources": ["icons/icon12.png"],
   "page_action": {
-    "default_icon": "icons/icon19.png",
-    "default_title": "Seymour: Character Counter",
+    "default_icon": {
+        "19": "icons/icon19.png",
+        "38": "icons/icon38.png"
+    },
+    "default_title": "Seymour: Personal Typist",
     "default_popup": "src/page_action/popup.html"
   },
   "content_scripts": [

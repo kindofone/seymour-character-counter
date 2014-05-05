@@ -4,10 +4,10 @@ var selectedTab = {};
 var isSelectedTabActive = false;
 
 var pageActionStates = {};
-pageActionStates['default'] = {iconURL: chrome.runtime.getURL("icons/icon19.png"), title: 'Seymour: Character Counter'};
-pageActionStates['disabled'] = {iconURL: chrome.runtime.getURL("icons/icon19.png"), title: 'Seymour is unavailable for this domain'};
-pageActionStates['active'] = {iconURL: chrome.runtime.getURL("icons/iconActive19.png"), title: 'Seymour is active'};
-pageActionStates['inactive'] = {iconURL: chrome.runtime.getURL("icons/iconInactive19.png"), title: 'Seymour is inactive'};
+pageActionStates['default'] = {iconURL: chrome.runtime.getURL("icons/icon38.png"), title: 'Seymour: Personal Typist'};
+pageActionStates['disabled'] = {iconURL: chrome.runtime.getURL("icons/icon38.png"), title: 'Seymour is unavailable for this domain'};
+pageActionStates['active'] = {iconURL: chrome.runtime.getURL("icons/iconActive38.png"), title: 'Seymour is active'};
+pageActionStates['inactive'] = {iconURL: chrome.runtime.getURL("icons/iconInactive38.png"), title: 'Seymour is inactive'};
 
 function toggleSeymour() {
 	var toggleAction = (isSelectedTabActive ? 'deactivate' : 'activate');
